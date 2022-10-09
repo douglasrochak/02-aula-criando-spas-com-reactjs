@@ -1,5 +1,8 @@
 import { Play } from "phosphor-react";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as zod from "zod";
+
 import {
   CounterdownContainer,
   FormContainer,
@@ -10,15 +13,25 @@ import {
   TaskInput,
 } from "./style";
 
+const newCycleFormValidation = zod.object({
+  task: zod.string().min(1, "Informe a tarefa"),
+  minutesAmount: zod
+    .number()
+    .min(5, "O ciclo precisa ser de no mínimo 5 minutos")
+    .max(60, "O ciclo precisa ser de no mínimo 5 minutos"),
+});
+
 export function Home() {
-  const { register, handleSubmit, watch } = useForm();
+  const { register, handleSubmit, watch } = useForm({
+    resolver: zodResolver(newCycleFormValidation),
+  });
 
   function handleCreateNewCycle(data: any) {
     console.log(data);
   }
 
   const task = watch("task");
-  const isSubmiDisabled = !task;
+  const isSubmitDisabled = !task;
 
   return (
     <HomeContainer>
@@ -49,7 +62,7 @@ export function Home() {
             step="5"
             min={5}
             max={60}
-            {...register("minutesAmount")}
+            {...register("minutesAmount", { valueAsNumber: true })}
           />
           <span>minutos</span>
         </FormContainer>
@@ -62,7 +75,7 @@ export function Home() {
           <span>0</span>
         </CounterdownContainer>
         <StartCountdownButton
-          disabled={isSubmiDisabled}
+          disabled={isSubmitDisabled}
           form="pomodoroForm"
           type="submit"
         >
