@@ -41,18 +41,21 @@ export function CycleContextProvider({ children }: CycleContextProviderProps) {
     {
       cycles: [],
       activeCycleId: null,
-    }
-    // Faz com que a aplicação não funcione se o localStorage estiver vazio
-    // ,
-    // () => {
-    //   const storedStateAsJSON = localStorage.getItem(
-    //     "@ignite-timer:cycles-state-1.0.0"
-    //   );
+    },
+    () => {
+      const storedStateAsJSON = localStorage.getItem(
+        "@ignite-timer:cycles-state-1.0.0"
+      );
 
-    //   if (storedStateAsJSON) {
-    //     return JSON.parse(storedStateAsJSON);
-    //   }
-    // }
+      if (storedStateAsJSON) {
+        return JSON.parse(storedStateAsJSON);
+      }
+
+      return {
+        cycles: [],
+        activeCycleId: null,
+      };
+    }
   );
 
   const { cycles, activeCycleId } = cyclesState;
