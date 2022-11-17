@@ -41,16 +41,18 @@ export function CycleContextProvider({ children }: CycleContextProviderProps) {
     {
       cycles: [],
       activeCycleId: null,
-    },
-    () => {
-      const storedStateAsJSON = localStorage.getItem(
-        "@ignite-timer:cycles-state-1.0.0"
-      );
-
-      if (storedStateAsJSON) {
-        return JSON.parse(storedStateAsJSON);
-      }
     }
+    // Faz com que a aplicação não funcione se o localStorage estiver vazio
+    // ,
+    // () => {
+    //   const storedStateAsJSON = localStorage.getItem(
+    //     "@ignite-timer:cycles-state-1.0.0"
+    //   );
+
+    //   if (storedStateAsJSON) {
+    //     return JSON.parse(storedStateAsJSON);
+    //   }
+    // }
   );
 
   const { cycles, activeCycleId } = cyclesState;
@@ -64,12 +66,6 @@ export function CycleContextProvider({ children }: CycleContextProviderProps) {
 
     return 0;
   });
-
-  useEffect(() => {
-    const stateJSON = JSON.stringify(cyclesState);
-
-    localStorage.setItem("@ignite-timer:cycles-state-1.0.0", stateJSON);
-  }, [cyclesState]);
 
   function createNewCycle(data: CreateCycleData) {
     const id = String(new Date().getTime());
@@ -96,6 +92,12 @@ export function CycleContextProvider({ children }: CycleContextProviderProps) {
   function setSecondsPassed(seconds: number) {
     setAmountSecondsPassed(seconds);
   }
+
+  useEffect(() => {
+    const stateJSON = JSON.stringify(cyclesState);
+
+    localStorage.setItem("@ignite-timer:cycles-state-1.0.0", stateJSON);
+  }, [cyclesState]);
 
   return (
     <CycleContext.Provider
